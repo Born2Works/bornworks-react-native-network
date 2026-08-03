@@ -8,7 +8,7 @@ Minimal app showing how to wire @bornworks/binar with the common HTTP clients.
 npx create-expo-app binar-demo --template blank-typescript
 cd binar-demo
 npm install axios
-npm install @bornworks/binar          # or: npm install <git-url-of-your-repo>
+npm install github:Born2Works/bornworks-react-native-network
 # replace the generated App.tsx with example/App.tsx from this repo
 npx expo start
 ```
@@ -20,7 +20,7 @@ Works in Expo Go — @bornworks/binar is JS-only, no native code.
 ```bash
 npx @react-native-community/cli init BinarDemo
 cd BinarDemo
-npm install axios @bornworks/binar
+npm install axios github:Born2Works/bornworks-react-native-network
 # replace App.tsx with example/App.tsx from this repo
 npm run android   # or: npm run ios
 ```
