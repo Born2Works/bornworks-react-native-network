@@ -1,4 +1,4 @@
-export { Davina, DavinaCore } from './core/DavinaCore';
-export { DavinaProvider, DavinaScreen } from './ui/DavinaProvider';
-export { useDavinaCalls } from './ui/hooks';
-export type { DavinaConfig, HttpCall, HttpCallRequest, HttpCallResponse } from './types';
+export { Binar, BinarCore } from './core/BinarCore';
+export { BinarProvider, BinarScreen } from './ui/BinarProvider';
+export { useBinarCalls } from './ui/hooks';
+export type { BinarConfig, HttpCall, HttpCallRequest, HttpCallResponse } from './types';

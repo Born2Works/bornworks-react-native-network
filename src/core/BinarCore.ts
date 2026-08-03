@@ -3,7 +3,7 @@ import { installXHRInterceptor } from '../interceptors/xhr';
 import { installFetchInterceptor } from '../interceptors/fetch';
 import { redactHeaders } from '../utils/redact';
 import { toStoredBody } from '../utils/format';
-import type { DavinaConfig, HttpCall, ResolvedDavinaConfig } from '../types';
+import type { BinarConfig, HttpCall, ResolvedBinarConfig } from '../types';
 import { resolveConfig } from '../types';
 
 type Listener = () => void;
@@ -17,8 +17,8 @@ function nextId(): string {
   return `${Date.now().toString(36)}-${counter}`;
 }
 
-export class DavinaCore {
-  config: ResolvedDavinaConfig = resolveConfig({ enabled: false });
+export class BinarCore {
+  config: ResolvedBinarConfig = resolveConfig({ enabled: false });
   store: CallStore = new CallStore(1000);
 
   private installed = false;
@@ -31,7 +31,7 @@ export class DavinaCore {
 
   // ── lifecycle ──────────────────────────────────────────────────────────────
 
-  init(config: DavinaConfig = {}): void {
+  init(config: BinarConfig = {}): void {
     this.config = resolveConfig(config);
     this.store.setMaxCallsCount(this.config.maxCallsCount);
     if (!this.config.enabled || this.installed) return;
@@ -169,4 +169,4 @@ export class DavinaCore {
 }
 
 /** Singleton instance used by the public API and the UI. */
-export const Davina = new DavinaCore();
+export const Binar = new BinarCore();

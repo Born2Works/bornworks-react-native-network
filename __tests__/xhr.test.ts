@@ -1,4 +1,4 @@
-import { DavinaCore } from '../src/core/DavinaCore';
+import { BinarCore } from '../src/core/BinarCore';
 import { TRACE_HEADER } from '../src/interceptors/xhr';
 
 /**
@@ -60,14 +60,14 @@ class FakeXHR {
 }
 
 describe('XHR interceptor', () => {
-  let core: DavinaCore;
+  let core: BinarCore;
 
   beforeEach(() => {
     FakeXHR.sentHeaders = {};
     FakeXHR.lastInstance = null;
     (globalThis as any).XMLHttpRequest = FakeXHR;
     delete (globalThis as any).fetch; // isolate: no fetch interceptor in these tests
-    core = new DavinaCore();
+    core = new BinarCore();
     core.init({ enabled: true });
   });
 
@@ -133,7 +133,7 @@ describe('XHR interceptor', () => {
 
   it('ignores configured URLs and Metro noise', () => {
     core.uninstall();
-    core = new DavinaCore();
+    core = new BinarCore();
     core.init({ enabled: true, ignoredUrls: [/analytics/] });
     fire('GET', 'https://api.dev/analytics/track');
     fire('GET', 'http://localhost:8081/symbolicate');
@@ -142,7 +142,7 @@ describe('XHR interceptor', () => {
 
   it('does nothing when disabled', () => {
     core.uninstall();
-    core = new DavinaCore();
+    core = new BinarCore();
     core.init({ enabled: false });
     fire();
     expect(core.store.getAll()).toHaveLength(0);

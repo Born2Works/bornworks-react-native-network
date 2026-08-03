@@ -1,26 +1,26 @@
 import { useSyncExternalStore, useCallback } from 'react';
-import { Davina } from '../core/DavinaCore';
+import { Binar } from '../core/BinarCore';
 import type { HttpCall } from '../types';
 
-export function useDavinaCalls(): HttpCall[] {
-  const subscribe = useCallback((cb: () => void) => Davina.store.subscribe(cb), []);
-  const getSnapshot = useCallback(() => Davina.store.getAll(), []);
+export function useBinarCalls(): HttpCall[] {
+  const subscribe = useCallback((cb: () => void) => Binar.store.subscribe(cb), []);
+  const getSnapshot = useCallback(() => Binar.store.getAll(), []);
   return useSyncExternalStore(subscribe, getSnapshot);
 }
 
-interface DavinaUiState {
+interface BinarUiState {
   visible: boolean;
   unseenCount: number;
   showNotification: boolean;
 }
 
-let cachedUiState: DavinaUiState | null = null;
+let cachedUiState: BinarUiState | null = null;
 
-function readUiState(): DavinaUiState {
-  const next: DavinaUiState = {
-    visible: Davina.isOpen(),
-    unseenCount: Davina.getUnseenCount(),
-    showNotification: Davina.config.showNotification,
+function readUiState(): BinarUiState {
+  const next: BinarUiState = {
+    visible: Binar.isOpen(),
+    unseenCount: Binar.getUnseenCount(),
+    showNotification: Binar.config.showNotification,
   };
   // Keep referential stability so useSyncExternalStore does not loop.
   if (
@@ -35,7 +35,7 @@ function readUiState(): DavinaUiState {
   return next;
 }
 
-export function useDavinaUiState(): DavinaUiState {
-  const subscribe = useCallback((cb: () => void) => Davina.subscribeUi(cb), []);
+export function useBinarUiState(): BinarUiState {
+  const subscribe = useCallback((cb: () => void) => Binar.subscribeUi(cb), []);
   return useSyncExternalStore(subscribe, readUiState);
 }

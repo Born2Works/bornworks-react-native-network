@@ -1,4 +1,4 @@
-import type { DavinaCore } from '../core/DavinaCore';
+import type { BinarCore } from '../core/BinarCore';
 import { TRACE_HEADER } from './xhr';
 
 let traceCounter = 0;
@@ -14,7 +14,7 @@ let traceCounter = 0;
  *
  * Returns an uninstaller that restores the original fetch.
  */
-export function installFetchInterceptor(core: DavinaCore): () => void {
+export function installFetchInterceptor(core: BinarCore): () => void {
   const g = globalThis as any;
   const origFetch: typeof fetch | undefined = g.fetch;
   if (!origFetch) return () => {};
@@ -77,7 +77,7 @@ export function installFetchInterceptor(core: DavinaCore): () => void {
   };
 }
 
-async function recordResponse(core: DavinaCore, id: string, response: Response): Promise<void> {
+async function recordResponse(core: BinarCore, id: string, response: Response): Promise<void> {
   let body: string | undefined;
   try {
     // Clone so the app can still consume the original stream.

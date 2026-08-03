@@ -1,6 +1,6 @@
 import React from 'react';
 import { Pressable, StyleSheet, Text } from 'react-native';
-import { Davina } from '../core/DavinaCore';
+import { Binar } from '../core/BinarCore';
 
 /**
  * Small floating badge shown when new HTTP calls are captured.
@@ -9,7 +9,7 @@ import { Davina } from '../core/DavinaCore';
 export function NotificationBubble({ count }: { count: number }) {
   if (count <= 0) return null;
   return (
-    <Pressable style={styles.bubble} onPress={() => Davina.open()} hitSlop={8}>
+    <Pressable style={styles.bubble} onPress={() => Binar.open()} hitSlop={8}>
       <Text style={styles.text}>{count > 99 ? '99+' : count} ⇅</Text>
     </Pressable>
   );

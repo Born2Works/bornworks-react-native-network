@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Modal, SafeAreaView, StyleSheet, View } from 'react-native';
-import { Davina } from '../core/DavinaCore';
-import { useDavinaUiState, useDavinaCalls } from './hooks';
+import { Binar } from '../core/BinarCore';
+import { useBinarUiState, useBinarCalls } from './hooks';
 import { CallListScreen } from './CallListScreen';
 import { CallDetailScreen } from './CallDetailScreen';
 import { NotificationBubble } from './NotificationBubble';
@@ -11,9 +11,9 @@ import type { HttpCall } from '../types';
  * The inspector itself: list + detail. Usable standalone (e.g. registered as
  * a react-navigation route) — pass onClose to control dismissal.
  */
-export function DavinaScreen({ onClose }: { onClose?: () => void }) {
+export function BinarScreen({ onClose }: { onClose?: () => void }) {
   const [selectedId, setSelectedId] = useState<string | null>(null);
-  const calls = useDavinaCalls();
+  const calls = useBinarCalls();
   const selected: HttpCall | undefined = selectedId
     ? calls.find((c) => c.id === selectedId)
     : undefined;
@@ -24,7 +24,7 @@ export function DavinaScreen({ onClose }: { onClose?: () => void }) {
   return (
     <CallListScreen
       onSelect={(c) => setSelectedId(c.id)}
-      onClose={onClose ?? (() => Davina.close())}
+      onClose={onClose ?? (() => Binar.close())}
     />
   );
 }
@@ -32,18 +32,18 @@ export function DavinaScreen({ onClose }: { onClose?: () => void }) {
 /**
  * Wrap your app once, near the root:
  *
- *   <DavinaProvider>
+ *   <BinarProvider>
  *     <App />
- *   </DavinaProvider>
+ *   </BinarProvider>
  *
  * Renders your app, the floating notification bubble, and the inspector as a
  * Modal overlay — no navigator required. Renders children untouched when
- * Davina is disabled.
+ * Binar is disabled.
  */
-export function DavinaProvider({ children }: { children: React.ReactNode }) {
-  const ui = useDavinaUiState();
+export function BinarProvider({ children }: { children: React.ReactNode }) {
+  const ui = useBinarUiState();
 
-  if (!Davina.config.enabled) {
+  if (!Binar.config.enabled) {
     return <>{children}</>;
   }
 
@@ -54,11 +54,11 @@ export function DavinaProvider({ children }: { children: React.ReactNode }) {
       <Modal
         visible={ui.visible}
         animationType="slide"
-        onRequestClose={() => Davina.close()}
+        onRequestClose={() => Binar.close()}
         presentationStyle="pageSheet"
       >
         <SafeAreaView style={styles.modal}>
-          <DavinaScreen onClose={() => Davina.close()} />
+          <BinarScreen onClose={() => Binar.close()} />
         </SafeAreaView>
       </Modal>
     </View>

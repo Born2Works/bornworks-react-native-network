@@ -1,7 +1,7 @@
 {
-  "name": "@bornworks/davina",
+  "name": "@bornworks/binar",
   "version": "0.1.0",
-  "description": "Davina — in-app HTTP inspector for React Native, inspired by Flutter's Alice. Captures fetch, axios and XMLHttpRequest traffic.",
+  "description": "Binar — in-app HTTP inspector for React Native, inspired by Flutter's Alice. Captures fetch, axios and XMLHttpRequest traffic.",
   "main": "src/index.ts",
   "types": "src/index.ts",
   "files": [
@@ -16,7 +16,7 @@
     "http",
     "inspector",
     "debug",
-    "davina",
+    "binar",
     "network",
     "logger"
   ],

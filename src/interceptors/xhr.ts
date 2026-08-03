@@ -1,4 +1,4 @@
-import type { DavinaCore } from '../core/DavinaCore';
+import type { BinarCore } from '../core/BinarCore';
 import { parseRawHeaders } from '../utils/format';
 
 /**
@@ -6,7 +6,7 @@ import { parseRawHeaders } from '../utils/format';
  * ride on XHR underneath (React Native's fetch polyfill) are not recorded twice.
  * The XHR patch strips it before the request leaves the device.
  */
-export const TRACE_HEADER = 'x-davina-trace';
+export const TRACE_HEADER = 'x-binar-trace';
 
 interface XhrMeta {
   method: string;
@@ -17,7 +17,7 @@ interface XhrMeta {
   id?: string | null;
 }
 
-type AnyXhr = XMLHttpRequest & { __davina?: XhrMeta };
+type AnyXhr = XMLHttpRequest & { __binar?: XhrMeta };
 
 /**
  * Patch XMLHttpRequest.prototype so every XHR-based request is captured.
@@ -26,7 +26,7 @@ type AnyXhr = XMLHttpRequest & { __davina?: XhrMeta };
  *
  * Returns an uninstaller that restores the original methods.
  */
-export function installXHRInterceptor(core: DavinaCore): () => void {
+export function installXHRInterceptor(core: BinarCore): () => void {
   const XHR: typeof XMLHttpRequest | undefined = (globalThis as any).XMLHttpRequest;
   if (!XHR) return () => {};
 
@@ -37,7 +37,7 @@ export function installXHRInterceptor(core: DavinaCore): () => void {
 
   proto.open = function (this: AnyXhr, method: string, url: string | URL, ...rest: any[]) {
     try {
-      this.__davina = { method, url: String(url), headers: {} };
+      this.__binar = { method, url: String(url), headers: {} };
     } catch {
       // capture must never break networking
     }
@@ -46,7 +46,7 @@ export function installXHRInterceptor(core: DavinaCore): () => void {
 
   proto.setRequestHeader = function (this: AnyXhr, name: string, value: string) {
     try {
-      const meta = this.__davina;
+      const meta = this.__binar;
       if (meta) {
         if (name.toLowerCase() === TRACE_HEADER) {
           // Marker from the fetch interceptor: remember it and DROP the header
@@ -66,7 +66,7 @@ export function installXHRInterceptor(core: DavinaCore): () => void {
 
   proto.send = function (this: AnyXhr, body?: unknown) {
     try {
-      const meta = this.__davina;
+      const meta = this.__binar;
       // Requests already recorded by the fetch interceptor are skipped here.
       if (meta && !meta.tracedByFetch) {
         meta.id = core.recordStart({

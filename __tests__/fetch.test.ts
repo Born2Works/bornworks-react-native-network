@@ -1,4 +1,4 @@
-import { DavinaCore } from '../src/core/DavinaCore';
+import { BinarCore } from '../src/core/BinarCore';
 import { TRACE_HEADER } from '../src/interceptors/xhr';
 
 function fakeResponse(status: number, body: string, headers: Record<string, string> = {}) {
@@ -15,7 +15,7 @@ function fakeResponse(status: number, body: string, headers: Record<string, stri
 }
 
 describe('fetch interceptor', () => {
-  let core: DavinaCore;
+  let core: BinarCore;
   let received: { input: unknown; init?: RequestInit } | null;
 
   beforeEach(() => {
@@ -25,7 +25,7 @@ describe('fetch interceptor', () => {
       received = { input, init };
       return fakeResponse(200, '{"ok":true}', { 'content-type': 'application/json' });
     });
-    core = new DavinaCore();
+    core = new BinarCore();
     core.init({ enabled: true });
   });
 
@@ -66,7 +66,7 @@ describe('fetch interceptor', () => {
     (globalThis as any).fetch = jest.fn(async () => {
       throw new Error('Network request failed');
     });
-    core = new DavinaCore();
+    core = new BinarCore();
     core.init({ enabled: true });
 
     await expect((globalThis as any).fetch('https://api.dev/fail')).rejects.toThrow(

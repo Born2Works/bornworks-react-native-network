@@ -1,7 +1,7 @@
 import React from 'react';
 import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
-import { Davina } from '../core/DavinaCore';
-import { useDavinaCalls } from './hooks';
+import { Binar } from '../core/BinarCore';
+import { useBinarCalls } from './hooks';
 import { formatDuration, formatSize } from '../utils/format';
 import type { HttpCall } from '../types';
 
@@ -38,14 +38,14 @@ interface Props {
 }
 
 export function CallListScreen({ onSelect, onClose }: Props) {
-  const calls = useDavinaCalls();
+  const calls = useBinarCalls();
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>Davina — HTTP Inspector</Text>
+        <Text style={styles.title}>Binar — HTTP Inspector</Text>
         <View style={styles.headerActions}>
-          <Pressable onPress={() => Davina.clear()} hitSlop={8}>
+          <Pressable onPress={() => Binar.clear()} hitSlop={8}>
             <Text style={styles.headerAction}>Clear</Text>
           </Pressable>
           <Pressable onPress={onClose} hitSlop={8}>

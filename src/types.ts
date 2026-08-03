@@ -1,4 +1,4 @@
-// Shared types for Davina (Bornworks network interceptor plugin).
+// Shared types for Binar (Bornworks network interceptor plugin).
 
 export type CallState = 'pending' | 'success' | 'error';
 
@@ -31,7 +31,7 @@ export interface HttpCall {
   state: CallState;
 }
 
-export interface DavinaConfig {
+export interface BinarConfig {
   /** When false, nothing is patched and every API is a no-op. Default: __DEV__ if available, else true. */
   enabled?: boolean;
   /** Show the in-app floating bubble when new calls arrive. Default: true. */
@@ -46,11 +46,11 @@ export interface DavinaConfig {
   ignoredUrls?: (string | RegExp)[];
 }
 
-export type ResolvedDavinaConfig = Required<DavinaConfig>;
+export type ResolvedBinarConfig = Required<BinarConfig>;
 
 export const DEFAULT_REDACTED_HEADERS = ['authorization', 'cookie', 'set-cookie'];
 
-export function resolveConfig(config: DavinaConfig = {}): ResolvedDavinaConfig {
+export function resolveConfig(config: BinarConfig = {}): ResolvedBinarConfig {
   // __DEV__ is defined by React Native / Metro; guard for plain Node (tests).
   const dev =
     typeof (globalThis as any).__DEV__ === 'boolean'
