@@ -1,17 +1,40 @@
 import React from 'react';
-import { Pressable, StyleSheet, Text } from 'react-native';
+import { Animated, PanResponder, Pressable, StyleSheet, Text } from 'react-native';
 import { Binar } from '../core/BinarCore';
+
+const DRAG_SLOP = 6;
 
 /**
  * Small floating badge shown when new HTTP calls are captured.
- * Tapping it opens the inspector. Hidden when showNotification is false.
+ * Tapping it opens the inspector; dragging it moves it anywhere on screen.
+ * Hidden when showNotification is false.
  */
 export function NotificationBubble({ count }: { count: number }) {
+  const pan = React.useRef(new Animated.ValueXY()).current;
+  const responder = React.useRef(
+    PanResponder.create({
+      // Capture phase so the drag steals the gesture from the inner Pressable
+      // once the finger actually moves; plain taps stay with the Pressable.
+      onMoveShouldSetPanResponderCapture: (_evt, gesture) =>
+        Math.abs(gesture.dx) > DRAG_SLOP || Math.abs(gesture.dy) > DRAG_SLOP,
+      onPanResponderMove: Animated.event([null, { dx: pan.x, dy: pan.y }], {
+        useNativeDriver: false,
+      }),
+      onPanResponderRelease: () => pan.extractOffset(),
+      onPanResponderTerminate: () => pan.extractOffset(),
+    }),
+  ).current;
+
   if (count <= 0) return null;
   return (
-    <Pressable style={styles.bubble} onPress={() => Binar.open()} hitSlop={8}>
-      <Text style={styles.text}>{count > 99 ? '99+' : count} ⇅</Text>
-    </Pressable>
+    <Animated.View
+      style={[styles.bubble, { transform: pan.getTranslateTransform() }]}
+      {...responder.panHandlers}
+    >
+      <Pressable onPress={() => Binar.open()} hitSlop={8}>
+        <Text style={styles.text}>{count > 99 ? '99+' : count} ⇅</Text>
+      </Pressable>
+    </Animated.View>
   );
 }
 
