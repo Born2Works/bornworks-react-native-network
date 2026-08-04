@@ -8,7 +8,7 @@
   <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-strict-6BA5FF?style=flat-square&labelColor=0E1420">
   <img alt="React Native" src="https://img.shields.io/badge/React_Native-Expo_%7C_bare-6BA5FF?style=flat-square&labelColor=0E1420">
   <img alt="Native modules: none" src="https://img.shields.io/badge/native_modules-none-3DD68C?style=flat-square&labelColor=0E1420">
-  <img alt="23 tests" src="https://img.shields.io/badge/tests-23_passing-3DD68C?style=flat-square&labelColor=0E1420">
+  <img alt="24 tests" src="https://img.shields.io/badge/tests-24_passing-3DD68C?style=flat-square&labelColor=0E1420">
 </p>
 
 ---
@@ -66,6 +66,7 @@ That's the whole setup. Fire requests and tap the bubble, or call `Binar.open()`
 Binar.init(config?)            // install interceptors (no-op when enabled: false)
 Binar.open() / Binar.close()   // show or hide the inspector
 Binar.setNotification(bool)    // toggle the floating bubble at runtime
+Binar.setScreen(name | null)   // report the active app screen (see below)
 Binar.clear()                  // wipe captured calls
 Binar.uninstall()              // restore the original XHR and fetch
 ```
@@ -76,10 +77,31 @@ Binar.uninstall()              // restore the original XHR and fetch
 |---|---|---|
 | `enabled` | `__DEV__` | When `false`, nothing is patched and every API is a no-op — safe to ship |
 | `showNotification` | `true` | Floating bubble with an unseen-call count; tap to open the inspector |
+| `showScreenLabel` | `true` | Floating pill with the active screen name; only appears once `Binar.setScreen` is wired |
 | `maxCallsCount` | `1000` | Ring buffer size; oldest calls are evicted first |
 | `maxBodySize` | `1_000_000` | Bodies longer than this (in chars) are truncated with a marker |
 | `redactedHeaders` | `authorization`, `cookie`, `set-cookie` | Values render as `***`, matched case-insensitively |
 | `ignoredUrls` | `[]` | Strings or RegExps to skip; Metro's `/symbolicate` noise is skipped already |
+
+### Screen label (Alice-style)
+
+Tell Binar which screen is active and it shows a draggable floating pill with the
+route name (`/Home`) on top of your app — and stamps every captured call with the
+screen that fired it (visible in the call list and detail Overview).
+
+With react-navigation:
+
+```tsx
+import { createNavigationContainerRef } from '@react-navigation/native';
+import { Binar } from '@bornworks/binar';
+
+const navRef = createNavigationContainerRef();
+const reportScreen = () => Binar.setScreen(navRef.getCurrentRoute()?.name ?? null);
+
+<NavigationContainer ref={navRef} onReady={reportScreen} onStateChange={reportScreen}>
+```
+
+`setScreen` is a no-op when Binar is disabled, so the wiring is safe in release builds.
 
 ### Mounting as a route
 

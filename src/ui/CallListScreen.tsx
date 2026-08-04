@@ -73,6 +73,7 @@ export function CallListScreen({ onSelect, onClose }: Props) {
                   <Text style={styles.method}>{item.method}</Text> {pathOf(item.url)}
                 </Text>
                 <Text style={styles.rowMeta} numberOfLines={1}>
+                  {item.screen ? `/${item.screen} · ` : ''}
                   {hostOf(item.url)} · {formatDuration(item.durationMs)} ·{' '}
                   {formatSize(item.response?.size)} · {item.client}
                 </Text>

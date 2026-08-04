@@ -28,6 +28,8 @@ export class BinarCore {
   private uiListeners = new Set<Listener>();
   /** Calls captured since the inspector was last opened (drives the bubble badge). */
   private unseenCount = 0;
+  /** Active app screen, reported by the host app via setScreen. */
+  private currentScreen: string | null = null;
 
   // ── lifecycle ──────────────────────────────────────────────────────────────
 
@@ -81,6 +83,7 @@ export class BinarCore {
       client: input.client,
       method: (input.method || 'GET').toUpperCase(),
       url: input.url,
+      screen: this.currentScreen ?? undefined,
       startedAt: Date.now(),
       state: 'pending',
       request: {
@@ -139,6 +142,20 @@ export class BinarCore {
 
   getUnseenCount(): number {
     return this.unseenCount;
+  }
+
+  /**
+   * Report the active app screen (e.g. from react-navigation's onStateChange).
+   * Shown as a floating label and stamped onto every call captured while active.
+   */
+  setScreen(name: string | null): void {
+    if (!this.config.enabled || this.currentScreen === name) return;
+    this.currentScreen = name;
+    this.emitUi();
+  }
+
+  getScreen(): string | null {
+    return this.currentScreen;
   }
 
   setNotification(show: boolean): void {

@@ -12,6 +12,8 @@ interface BinarUiState {
   visible: boolean;
   unseenCount: number;
   showNotification: boolean;
+  showScreenLabel: boolean;
+  screen: string | null;
 }
 
 let cachedUiState: BinarUiState | null = null;
@@ -21,13 +23,17 @@ function readUiState(): BinarUiState {
     visible: Binar.isOpen(),
     unseenCount: Binar.getUnseenCount(),
     showNotification: Binar.config.showNotification,
+    showScreenLabel: Binar.config.showScreenLabel,
+    screen: Binar.getScreen(),
   };
   // Keep referential stability so useSyncExternalStore does not loop.
   if (
     cachedUiState &&
     cachedUiState.visible === next.visible &&
     cachedUiState.unseenCount === next.unseenCount &&
-    cachedUiState.showNotification === next.showNotification
+    cachedUiState.showNotification === next.showNotification &&
+    cachedUiState.showScreenLabel === next.showScreenLabel &&
+    cachedUiState.screen === next.screen
   ) {
     return cachedUiState;
   }

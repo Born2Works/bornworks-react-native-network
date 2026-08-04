@@ -23,6 +23,8 @@ export interface HttpCall {
   client: 'xhr' | 'fetch';
   method: string;
   url: string;
+  /** App screen active when the request started (set via Binar.setScreen). */
+  screen?: string;
   startedAt: number;
   durationMs?: number;
   request: HttpCallRequest;
@@ -36,6 +38,8 @@ export interface BinarConfig {
   enabled?: boolean;
   /** Show the in-app floating bubble when new calls arrive. Default: true. */
   showNotification?: boolean;
+  /** Show the floating label with the current screen name (needs Binar.setScreen wiring). Default: true. */
+  showScreenLabel?: boolean;
   /** Ring buffer size. Default: 1000. */
   maxCallsCount?: number;
   /** Max stored body size in characters; longer bodies are truncated. Default: 1_000_000. */
@@ -59,6 +63,7 @@ export function resolveConfig(config: BinarConfig = {}): ResolvedBinarConfig {
   return {
     enabled: config.enabled ?? dev,
     showNotification: config.showNotification ?? true,
+    showScreenLabel: config.showScreenLabel ?? true,
     maxCallsCount: config.maxCallsCount ?? 1000,
     maxBodySize: config.maxBodySize ?? 1_000_000,
     redactedHeaders: config.redactedHeaders ?? DEFAULT_REDACTED_HEADERS,

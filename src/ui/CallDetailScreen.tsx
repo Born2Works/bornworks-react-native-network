@@ -70,6 +70,7 @@ function Overview({ call }: { call: HttpCall }) {
   const rows: [string, string][] = [
     ['URL', call.url],
     ['Method', call.method],
+    ...(call.screen ? ([['Screen', `/${call.screen}`]] as [string, string][]) : []),
     ['Status', call.state === 'error' ? `Error — ${call.error?.message ?? ''}` : String(call.response?.status ?? 'pending')],
     ['Client', call.client],
     ['Started', new Date(call.startedAt).toLocaleTimeString()],

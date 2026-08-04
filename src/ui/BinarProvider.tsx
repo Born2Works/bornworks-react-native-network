@@ -5,6 +5,7 @@ import { useBinarUiState, useBinarCalls } from './hooks';
 import { CallListScreen } from './CallListScreen';
 import { CallDetailScreen } from './CallDetailScreen';
 import { NotificationBubble } from './NotificationBubble';
+import { ScreenLabel } from './ScreenLabel';
 import type { HttpCall } from '../types';
 
 /**
@@ -50,6 +51,7 @@ export function BinarProvider({ children }: { children: React.ReactNode }) {
   return (
     <View style={styles.host}>
       {children}
+      {ui.showScreenLabel && !ui.visible && ui.screen != null && <ScreenLabel name={ui.screen} />}
       {ui.showNotification && !ui.visible && <NotificationBubble count={ui.unseenCount} />}
       <Modal
         visible={ui.visible}

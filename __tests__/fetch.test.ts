@@ -60,6 +60,18 @@ describe('fetch interceptor', () => {
     expect(call.response?.headers['content-type']).toBe('application/json');
   });
 
+  it('stamps the active screen onto calls captured while it is set', async () => {
+    core.setScreen('Home');
+    await (globalThis as any).fetch('https://api.dev/items');
+    await new Promise<void>((resolve) => setTimeout(resolve, 0));
+    expect(core.store.getAll()[0].screen).toBe('Home');
+
+    core.setScreen(null);
+    await (globalThis as any).fetch('https://api.dev/items');
+    await new Promise<void>((resolve) => setTimeout(resolve, 0));
+    expect(core.store.getAll()[0].screen).toBeUndefined();
+  });
+
   it('records network failures as errors and rethrows', async () => {
     ((globalThis as any).fetch as jest.Mock).mockRestore?.();
     core.uninstall();
