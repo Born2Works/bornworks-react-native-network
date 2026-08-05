@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { formatDuration, formatSize, prettyBody } from '../utils/format';
+import { callToText } from '../utils/export';
+import { copyOrShare, shareText } from './deliver';
+import { useDeliveryFeedback } from './hooks';
 import { statusColor } from './CallListScreen';
 import type { HttpCall } from '../types';
 
@@ -18,6 +21,11 @@ interface Props {
 export function CallDetailScreen({ call, onBack }: Props) {
   const [tab, setTab] = useState<Tab>('Overview');
   const [showFullBody, setShowFullBody] = useState(false);
+  const [feedback, deliver] = useDeliveryFeedback();
+
+  // The whole call, not the tab in view: someone reaching for Copy wants the
+  // request and the response together, and the untruncated bodies.
+  const label = `${call.method} ${call.url}`;
 
   return (
     <View style={styles.container}>
@@ -28,7 +36,20 @@ export function CallDetailScreen({ call, onBack }: Props) {
         <Text style={styles.title} numberOfLines={1}>
           {call.method} {call.url}
         </Text>
+        <View style={styles.headerActions}>
+          <Pressable onPress={() => deliver(() => copyOrShare(callToText(call), label))} hitSlop={8}>
+            <Text style={styles.headerAction}>Copy</Text>
+          </Pressable>
+          <Pressable onPress={() => deliver(() => shareText(callToText(call), label))} hitSlop={8}>
+            <Text style={styles.headerAction}>Share</Text>
+          </Pressable>
+        </View>
       </View>
+      {feedback && (
+        <View style={styles.toast}>
+          <Text style={styles.toastText}>{feedback}</Text>
+        </View>
+      )}
       <View style={styles.tabs}>
         {TABS.map((t) => (
           <Pressable key={t} style={[styles.tab, tab === t && styles.tabActive]} onPress={() => setTab(t)}>
@@ -162,6 +183,10 @@ const styles = StyleSheet.create({
   },
   back: { color: '#1565c0', fontSize: 15, fontWeight: '600' },
   title: { flex: 1, fontSize: 13, fontWeight: '600', color: '#222' },
+  headerActions: { flexDirection: 'row', gap: 14 },
+  headerAction: { fontSize: 14, color: '#1565c0', fontWeight: '600' },
+  toast: { backgroundColor: '#323232', paddingVertical: 8, alignItems: 'center' },
+  toastText: { color: '#fff', fontSize: 12, fontWeight: '600' },
   tabs: { flexDirection: 'row', borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: '#ddd' },
   tab: { flex: 1, alignItems: 'center', paddingVertical: 10 },
   tabActive: { borderBottomWidth: 2, borderBottomColor: '#1565c0' },

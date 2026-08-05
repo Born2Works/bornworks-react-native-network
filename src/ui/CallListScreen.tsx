@@ -1,8 +1,10 @@
 import React from 'react';
 import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
 import { Binar } from '../core/BinarCore';
-import { useBinarCalls } from './hooks';
+import { useBinarCalls, useDeliveryFeedback } from './hooks';
 import { formatDuration, formatSize } from '../utils/format';
+import { callsToText } from '../utils/export';
+import { copyOrShare } from './deliver';
 import type { HttpCall } from '../types';
 
 export function statusColor(call: HttpCall): string {
@@ -39,12 +41,22 @@ interface Props {
 
 export function CallListScreen({ onSelect, onClose }: Props) {
   const calls = useBinarCalls();
+  const [feedback, deliver] = useDeliveryFeedback();
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>Binar — HTTP Inspector</Text>
         <View style={styles.headerActions}>
+          <Pressable
+            onPress={() => deliver(() => copyOrShare(callsToText(calls), 'Binar — all calls'))}
+            hitSlop={8}
+            disabled={calls.length === 0}
+          >
+            <Text style={[styles.headerAction, calls.length === 0 && styles.headerActionOff]}>
+              Copy all
+            </Text>
+          </Pressable>
           <Pressable onPress={() => Binar.clear()} hitSlop={8}>
             <Text style={styles.headerAction}>Clear</Text>
           </Pressable>
@@ -53,6 +65,11 @@ export function CallListScreen({ onSelect, onClose }: Props) {
           </Pressable>
         </View>
       </View>
+      {feedback && (
+        <View style={styles.toast}>
+          <Text style={styles.toastText}>{feedback}</Text>
+        </View>
+      )}
       {calls.length === 0 ? (
         <View style={styles.empty}>
           <Text style={styles.emptyText}>No HTTP calls captured yet</Text>
@@ -99,8 +116,11 @@ const styles = StyleSheet.create({
     borderBottomColor: '#ddd',
   },
   title: { fontSize: 16, fontWeight: '700', color: '#222' },
-  headerActions: { flexDirection: 'row', gap: 16 },
+  headerActions: { flexDirection: 'row', gap: 14 },
   headerAction: { fontSize: 14, color: '#1565c0', fontWeight: '600' },
+  headerActionOff: { color: '#bbb' },
+  toast: { backgroundColor: '#323232', paddingVertical: 8, alignItems: 'center' },
+  toastText: { color: '#fff', fontSize: 12, fontWeight: '600' },
   empty: { flex: 1, alignItems: 'center', justifyContent: 'center' },
   emptyText: { color: '#888' },
   row: { flexDirection: 'row', alignItems: 'center', padding: 12, gap: 10 },
